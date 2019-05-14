@@ -24,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MovieData {
 
-    private static final String apiKey = "7336726f7af055eb829763c6e5dae585";//Generate your own API key
+    private static final String apiKey = "";//Generate your own API key
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
     private static Retrofit retrofit = null;
 
