@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="error_message">Something went wrong</string>
+    <string name="title">Title</string>
+    <string name="average_vote">Average Vote</string>
+    <string name="overview">Overview</string>
+    <string name="release_date">Release date</string>
+    <string name="movie_poster">Movie poster</string>
+    <string name="rating_sort">Sort by rating</string>
+    <string name="popularity_sort">Sort by popularity</string>
+    <string name="movie_trailers">Trailers</string>
+    <string name="movie_reviews">Reviews</string>
+    <string name="mark_as_favorite">Mark as favorite</string>
+    <string name="play_video">Play video</string>
+    <string name="my_favorites">My favorites</string>
+    <string name="removed_from_favorite">Removed from favorites</string>
+    <string name="set_as_favorite">Set as favorite</string>
+    <string name="movies_already_sorted">Movies already sorted in that order</string>
+    <string name="no_movies_favorite">No favorite movies marked</string>
+</resources>
