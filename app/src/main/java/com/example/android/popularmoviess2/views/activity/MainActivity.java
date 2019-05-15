@@ -5,8 +5,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
     private MoviesAdapter moviesAdapter;
     private MainViewModel mainViewModel;
     private LiveData<List<Movie>> favoriteMovies;
+    private RecyclerView mRecyclerView;
+    private GridLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
         setContentView(R.layout.activity_main);
         mProgressBar = findViewById(R.id.pb_loading_indicator);
         moviesAdapter = new MoviesAdapter(this);
-        RecyclerView mRecyclerView = findViewById(R.id.recyclerview_movies);
+        mRecyclerView = findViewById(R.id.recyclerview_movies);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
+        layoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(moviesAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -148,5 +153,59 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Lis
         Intent detailIntent = new Intent(this, MovieDetailActivity.class);
         detailIntent.putExtra("MovieData",selectedMovie);
         startActivity(detailIntent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putInt("sortOrder",movieSortOrder);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle outState){
+        if(outState!=null){
+            movieSortOrder = outState.getInt("sortOrder");
+        }
+    }
+
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mBundleRecyclerViewState = new Bundle();
+        mListState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, mListState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            layoutManager.setSpanCount(2);
+
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            layoutManager.setSpanCount(2);
+
+        }
+        mRecyclerView.setLayoutManager(layoutManager);
     }
 }
